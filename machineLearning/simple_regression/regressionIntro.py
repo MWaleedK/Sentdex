@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import datetime
 from matplotlib import style
 import pickle
+import os
+
 
 style.use('ggplot')
 
@@ -24,34 +26,34 @@ forecast_col = 'Adj. Close'
 
 df.fillna(-99999, inplace=True)
 
-forecast_out = int(math.ceil(0.01*len(df))) #predicting using 1 percent of the dataframe rows 0.01 is 1%
+forecast_out = int(math.ceil(0.1*len(df))) #predicting using 10 percent of the dataframe rows 0.1 is 10%
 
 print(forecast_out)
 
 df['label'] = df[forecast_col].shift(-forecast_out)
 
 
-X =  np.array(df.drop(['label'], axis=1))
+X =  np.array(df.drop(['label', 'Adj. Close'], axis=1))
 
 X = preprocessing.scale(X)
-
-X = X[: -forecast_out]
 X_lately = X[-forecast_out:]
+X = X[: -forecast_out]
+
 
 df.dropna(inplace=True)
 y = np.array(df['label'])
 
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.2)
 
-#classifier = LinearRegression(n_jobs=-1)
-#classifier = svm.SVR(kernel = 'poly')
+classifier = LinearRegression(n_jobs=-1)
+classifier = svm.SVR(kernel = 'poly')
 
-#classifier.fit(X_train, y_train)
+classifier.fit(X_train, y_train)
 
-#with open('linearregression.pickle', 'wb') as f:
-#    pickle.dump(classifier, f)
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'linearregression.pickle'), 'wb') as f:
+    pickle.dump(classifier, f)
 
-pickle_in = open('linearregression.pickle', 'rb')
+pickle_in = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'linearregression.pickle'), 'rb')
 classifier = pickle.load(pickle_in)
 
 accuracy = classifier.score(X_test, y_test)
