@@ -1,6 +1,75 @@
+
 import matplotlib.pyplot as plt
-from matplotlib import style
+import cv2 as cv
+import os
+
+# remember finding the magnitude of a vector is : sqrt(x^2 = y2) (two dimensions)
+# dot product between vectors is king here
+
+# in a plane of (+)s and (-)s as class outputs to be classified as
+
+#after the decision boundary is made, the svm will then going to classify the points by taking a point (say: W) that points perpendicularly to the hyperplane 
+#use then find the unknow vector (say: U) 
+# then project U on W or vice versa.
+# check what side of the hyperplane it i on
+# b is the bias, y-intercep in this case
+
+# (U . W) + b >= 0 the classification output is +, otherwise -
+# if (U . W) + b == 0, then the point is on the decision boundary
+
+#We know the value for U since it is a vector and will have values as a vector does
+#Our main concern is finding both W and b
+
+#Support vectors are the feature sets that would move if a feature(point on plane is move) which is understandable
+
+#why is Width necessary? because width = (SV_+ + SV_-)/2 will give the separation hyperplane where SV_+ and SV_- are support vectors or the margins from the separator hyperplane
+
+#width is given by (X_+ - X_-) . (W/magnitude(W)), where we maximize width
+# we want to minimize (1/magnitude(W)) and as well (2/magnitude(W))^2
+# this is a constraint (2/magnitude(W))^2
+#bring in largrange
+'''
+fig = plt.figure(figsize=(12,8))
+image_base_path = os.path.dirname(os.path.abspath(__file__))
+
+lagrange = os.path.join(image_base_path, 'lagrange.png')
+lagrange = cv.imread(lagrange, cv.IMREAD_COLOR)
+fig.add_subplot(2,2,1)
+plt.imshow(lagrange)
+plt.axis('off')
+plt.title('Lagrange, maximize b')
+
+#why maximize b? because it is the y-intercept, it moves the y-line up and down (on the y-axis). Call it bias in SVM when referring to a hyperplane
+der_lagrange = os.path.join(image_base_path, 'lagrange_derivation.png')
+#partital derivation done on lagrange with respect to W and b
+der_lagrange = cv.imread(der_lagrange, cv.IMREAD_COLOR)
+fig.add_subplot(2,2,2)
+plt.imshow(der_lagrange)
+plt.axis('off')
+plt.title('Partial Derivation of lagrange')
+
+#maximize this
+lagrange_output = os.path.join(image_base_path, 'lagrange_output.png')
+lagrange_output = cv.imread(lagrange_output, cv.IMREAD_COLOR)
+fig.add_subplot(2,2, 3)
+plt.imshow(lagrange_output)
+plt.axis('off')
+plt.title('Final output to be maximized')
+plt.waitforbuttonpress()
+'''
+
+
+#Now svms do not scale well with a really big dataset since all feature sets are needed in memory
+#Minibatches can be used
+# But the most common method used instead of SVM is sequential minimal optimization or SMO
+#But
+#once trained on a feature set, you just need the sign (+/-) of WX+b (good point)
+
+#it's an optimization proble, we want a global minimum
+
+from matplotlib import style 
 import numpy as np
+import copy
 style.use('ggplot')
 
 class Support_Vector_Machine:
